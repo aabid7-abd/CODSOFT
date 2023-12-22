@@ -1,5 +1,6 @@
 import json
 
+
 class ContactBook:
     def __init__(self, file_path="contacts.txt"):
         self.contacts = []
@@ -33,15 +34,25 @@ class ContactBook:
     def update_contact(self, search_term, updated_name, updated_phone, updated_email="", updated_address=""):
         for contact in self.contacts:
             if search_term.lower() in contact['Name'].lower() or search_term in contact['Phone']:
-                contact.update({'Name': updated_name, 'Phone': updated_phone, 'Email': updated_email, 'Address': updated_address})
+                contact.update(
+                    {'Name': updated_name, 'Phone': updated_phone, 'Email': updated_email, 'Address': updated_address})
                 self.save_contacts()
                 print("Contact updated successfully!")
                 return
         print("No matching contact found.")
 
-    def delete_contact(self, search_term):
+    def delete_contact(self):
+        if self.contacts:
+            for contact in self.contacts:
+                print(f"Name:{contact['Name']}  \nContact:{contact['Phone']} \nAddress:{contact['Address']}")
+                print()
+        else:
+            print("No contacts available.")
+            return
+
+        Search_Term = input("Enter name or phone number to delete: ")
         for contact in self.contacts:
-            if search_term.lower() in contact['Name'].lower() or search_term in contact['Phone']:
+            if Search_Term.lower() in contact['Name'].lower() or Search_Term in contact['Phone']:
                 self.contacts.remove(contact)
                 self.save_contacts()
                 print("Contact deleted successfully!")
@@ -58,6 +69,7 @@ class ContactBook:
     def save_contacts(self):
         with open(self.file_path, 'w') as file:
             json.dump(self.contacts, file, indent=2)
+
 
 # Example usage:
 
@@ -99,8 +111,7 @@ while True:
         contact_book.update_contact(search_term, updated_name, updated_phone, updated_email, updated_address)
 
     elif choice == '5':
-        search_term = input("Enter name or phone number to delete: ")
-        contact_book.delete_contact(search_term)
+        contact_book.delete_contact()
 
     elif choice == '6':
         print("Exiting Contact Book. Goodbye!")
